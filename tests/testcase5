@@ -1,0 +1,102 @@
+ /\abcde
+abcd*|cba(abc)+|(abc)+(bdb)(abc)?|a.b.c.d|(((abc)+)+)+
+ \     acabecdabeaecadcaaaededabeccdeddbedcdeabcacdddeeecdeccdbbaae
+ /\/\/ acebaebaabeaaacebdcceabbdbeeebcacecedbbadaadccdaadccdbbaedcd
+ /\/\/ eacaddcadacbeebbbcdedadcccdadaaaadeebdcdcbbedeebdbecaddcebdb
+ /\/\/ cbbaabbdcccaacbbeaaebcbdebcddecbbceddcdeebddabaaeeedacbebedd
+  \    bacbabcedeebcbecbdebaabbeaeecacbcbddecdabdcedcdeddddbdaadecd
+   \   dbceebcbbbecbcbdeebcaceadeadbcadeebeeeebadecadbbadbccddacdac
+ /\/\/ beacdecbbedececdcbdddbceebdbddbeeceaaadeacbababdcbecabdaaadb
+    \  cdbabcecbeecceeebaecdedbdeaacaeadebdbbcadaaeccecdaccedaebcba
+     \ ebbdcbddddaddebabebddacdddccccaeadbdbdabceabcdecceecbceaeeac
+ /\/\/ cbedaeeeecaacbccbcdacacbcbdbacccbadeaadabdbeacbeadeaabbcdcae
+      \cbbccdccaacaaaddeabadaeabcacbcacbecebbcdaebebaedeebbaedaddee
+ /\/\/ aeadcbcaeeaebaeddabaeecbbacabbabbcaebbebbaccaedaabdadcbddbce
+ /\/\/ eadbeeabebeedbddddeebdeedbbbadeccddbdeeecdccdcecbcddecaacbca
+      /cededdacedbccabcedeeabbbcebaeabddebbbebbecaadcdaaaccededbddb
+ /\/\/ dcbcecbbecececaebdbdccbcdaebbedecadeebebbdcbadacbaedbbcacacb
+ /\/\/ dabeacedddeaaaacebdbdcabebecabddabeaeecbabbdcaccbbebaecebeac
+ /\/\/ dadbedbbaabeeddcabdcededecdaaedeecbdddbecacdedecebccdcdadeed
+ /\/\/ dababbeaedbccceaabdddacdcddcbcbdeaacbebeaaaddeeaeaeadceededd
+ /\/\/ debbbbebddedcaeeabebbdaeebaddaeadaceabddcbeaacbbbdadeecccedb
+ /\/\/ acdbbdeccdacdbdaabaaebcaaeebcacbcecbacbddbaaaabaadbccdbacddd
+ /\/\/ adbeaacbbeeccacbcceccccdeeecbbdeedabbadaaebbadbeecdbecdabbeb
+     / cdabdcadbeaddaeeddabadbdacbcabaedcbcedabcbbbceccbaecccbcccde
+ /\/\/ caaebbdbeedbbdddcdbecbddcaecabbedbbcbaeccecaedbdadacdcdabedd
+    /  bcbaeabcbaacbdbddcdabecdcbcbeccdcebbeddbdcecbcdaaeeccabdecce
+ /\/\/ cadeadaebceadbdbccaaecbebdcbdaaddabdeeaebdbeaabbeebebebbdcee
+ /\/\/ acadcbcbacabdbbeebdbaaebebddcbbbabdeccccbcacbcbebcbdcceeacde
+   /   ecdeeaccdecccbccceaebddceaeebdbdbabdeecaeeecadabcdaedddeaebc
+  /    cebdeacdeabdeeabdbbcabcedebabbcddebdcedabaccdadbcebbdeddeacc
+ /     ccbbcbdbccacecdeaeedcbcddacaabccdebeadbebeaaaababceeecdcdcad
+ /\/\/ cebcebdcbccbceddaaaecccacecedbdacabaceabdadcceabebadcdbcdccd
+ /\/\/ ecaeaedebabdeeeaeaeacdbebcadabdeeadbdbddacbeaedcacbcbdbedaae
+ /\/\/ bcdcaccaecdeacecbeeebbabddebbeddecbbedbebedbbbbacebdcedddaac
+ /\/\/ dededdaceaaacebadabbdbebececbcbdbcdbdbecaeadedcccbecceaeccca
+ /\/\/ ceebaebdbaebebdcbaeacddedddcecccccacdaccbcadaadacecbbaabbbdb
+ /\/\/ dbdaddeacbbadcbdccbbccebbceaeedccddcaeedbecdaaeacaedbcdddebc
+/      ddceeebeccdcabbabbcaebdeeccddbddaaedaddcaaeeebaeabcdcecdabcd
+\      dadbbaceabcecbdbdebccceadbeecddacebaebecbbdaadcddbebbddeabdc
+ /\/\/ ebaacbbbedcbedaaaabdabeeaeadadeeeaeeabaadcbecabaabeeaceebdbb
+ /\/\/ aeeabddabdecbacdaeaddadbadadedaccaddddeadedbdbeeeabeedcecded
+ \     acbcbccddaececdeadcabeecedcabceeecbaadcceccdcbdacccacbcbeaae
+ /\/\/ edbcbdceedcebdbdbaadbeacedbcdaaedcedaeecdeaebabdcbbdcdbdeabe
+ /\/\/ bbdcccbabeccacdcbdaadaeeadcadedbacdcacddcdabeddacdcebdedbbba
+ /\/\/ bddaaeeeacedeaeadbdcaedbcbaedbcccbabbabaddeeabbcceaecbdaaaed
+ /\/\/ bdedaedaadceaabedaedaecbaaddbebcbaceebaedabdcaddccadbaabddbb
+ /\/\/ ddeeaaedaebbcdeaaccbccaadcdccdcbbdbdcaabdecdcbbebcccebdaebdc
+ /\/\/ aebabababdbdacadddbcaddccebabddccdcdaeeeadceaceaecaedabecbea
+ /\/\/ eababebaeddeadbbbbaacaeeceeacecedcdddbcadbcedddcaaacebdccdde
+ /\/\/ bccaeaebebecadaedeacebcdccbcaaadcdddcaaaeebdcabbbddebcddeeae
+  \    cbcacebabcbbdcaedaebcbacadeebaeecbbcecddabebacecdeceecaebded
+   \   cbacdcdecdacaadbbcceabcedbaeecedceddcadbebceddebaeeadcebcede
+    \  aaeeaebedebcdccedcecaabaceaacbcadaedaabccdabceeecccaedebecac
+     \ cdaaeabdbcbceebcbdabaeaaecacaebaceedebedacadadabaaaabccececb
+ /\/\/ caeedccdcaddaeeedbbacbeeecdabdbeebdccaadebdededbbebbbcbedbcc
+      \bbaebdbecdddabbbaabcbaeccedbbbcebbcacdaceeaaecdadaeceadadaaa
+      /eabbaaccabdbabcecdeaceabbaccebceabcdbdaccecedbcdcabdddcbdcda
+ /\/\/ eaadddbcbacbdeebacdbedaecdadcecebbddbdacdcababdecdcacccabdbb
+     / ceaaaabdbadabdabcbeacdccadbedbdcbedebaaacbebecebbacbbdeeacdb
+ /\/\/ ddcbabdcebddecedadacdbbeceadcebaeacebcdddcbeacbecccebebacccd
+ /\/\/ bebccdbddcbeedbedddddcbccaeabaceecaaedbdceacebedeaedcdcdcbbd
+ /\/\/ dbdeedacaccaecebedbaeaaabadbbddaeeeeebdeccecaaabbbaceabaaccb
+ /\/\/ cdbdbcbeaddeedbcaacbdbeabaadbdbeeaaccacaeeaaccacabdbaebddcbe
+ /\/\/ adddccbcedeeeeadcbecebedeaaaabadcbaadebaeabbdaccbdbadeeccbed
+ /\/\/ ceaddadecacdadadbdadcbebdaddecbbaaebaecbccebbeaacabbcedeabad
+ /\/\/ bdbbbeadcaeabeacceeacbaabaedabbcbeeddbddadedcbbbeadeebedbadd
+    /  aeacebbaaeeeccdebccaaabceebacdeeccebebdaeddbdedacbdeceeecabe
+ /\/\/ edbccdabeceedcccabdcdccbbdacaeebeaccbbbbbaeaabdddccddebacbae
+   /   aeaabaedabceccbeaecbdbaadddaaaebececdeaabeacaacdadadaadccbdb
+ /\/\/ bdcceaacbddaccacbcaacdceecbdaecadccbaccedbaceaaaecaaccccaddd
+  /    abceeababeececccbbeaeebedbeaeebeddbebcaaaeacdbedbadabbbabbcb
+ /\/\/ aedaeecdcddedeaecaaacababadccacdccacccbbebbedacaaeadebedbddc
+ /     adbbabddbdbbdbcbcaebcceacdeeeabcccbabccabcdababebbcadcbcedec
+ /\/\/ dbeddbdceacabaeabeadedcebcdcecdecbababacecebeddcbacbacaedabb
+/      ecbeebadcbeccabbbdacdcabaeadaebbdbbbddeeddadeacbdcedceeccced
+ /\/\/ debbcdbcbaceecedbbbabebdaacedebadbdbbbcebebecdacdecacdebeede
+\      beceaababcedeeabbdacaddaceccebacbdebceacddbabebabccabaeaccae
+ \     ddadaacdaacbbcbbcdbedebdaeaddcadacbdceadbacbdbeabceadcbedbed
+  \    ebeccaccccbacaabcbbcabcdbcdcdaeaddbaddaecbabdbdabaecdacadeee
+   \   aebbbecddddbaeccdaabdddaabaadeeeecbadabaeebcedccabcdddbcaeec
+ /\/\/ beaeceaceadceccedebbeeecababdbbaadaeebdcbdeedacebbcdbbaacecc
+ /\/\/ eeedcaadacdcebcbcbbeaabaedaadbdeedbccbcaccbeeaedebcebbbaecbb
+ /\/\/ ceedceeddedbdbadbbaaecdcedabecccabaaeccecaadbdecbdecbeabedea
+ /\/\/ baaeceedadeeabeebecccdbabdaecaaccceedcbcddbebabdbbdeadccbebd
+ /\/\/ dceaeecdaaeeaccacaacdeaaecddedaaeccccccabdbdaabeadccbabdcdca
+    \  eeccdbcdbeeccabcdcabdeadaaadbdadaddeddadcbdadaddbcacbcaadecd
+ /\/\/ eeddedecabedcbeacecbbcedbccededcdaeaaacecedbbacddedccbceadbb
+     \ ddbabacbaabbbacdeabcbdededcddacdeebaddcbddadcaccbeebaadddeae
+ /\/\/ adccaddedeebcdcdebaadecccdbbcbbcbbdbeaddcaadadcdaccdbcbccdcd
+ /\/\/ ccaaebddeccbeebbebccbaebdbdcddeeeadddadbbdeadbaaeaebebcbdbaa
+ /\/\/ acbdbdacbcadebbaabebeecddcdcddeabdcedebabeeceaeebcecddcbcdcb
+      \eaedbeabccaadbaaedacecdbcbeaebeadbacebadaeeeabcaebbbecbeddbe
+      /edccaeeabcaeaddeeebbabbdabadabeeccbdeeeaacaceddacdddeaecedde
+     / ccaaebbcddbdedbaeedcdecedeadceccbaebdcbecededbbeecdceaebdeee
+ /\/\/ dcbadcacaedccccbdcaccccedbabddeaedddbdbcbcdcecbdcabaecbdbbdc
+ /\/\/ eabdeeecdaceeeacacabbadccebaaaaacaceadedebeeedbddceababbadeb
+ /\/\/ eacdceeeebedcaaadcadbcbeebaaaaedcccabbdecececebdbdaddbdbacea
+ /\/\/ eecbeeebecdbebcacbebdbdbccaecdbdbeaacddeecdecabbdbeeadddebdd
+    /  bdcadbecaeabccbebdcdccbdebabaabbcbebaeadecdababaadddaaaababd
+ /\/\/ dbdbdacebcaaaeebdbadedcdceaeaebecececcdcbeeedbaebceebbebeabd
+   /   dccddeedaededbadcdaaaabdcaaaecaabebcdbabccabcebadbebbebddbcb
+ /\/\/ cdddedacaeeabaccecccbaabbeecbbabdacdbccdcaaddbcdacecbeeadbca

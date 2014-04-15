@@ -1,0 +1,42 @@
+ /\abcd
+a*bc*(ab)+
+ /\/\/ bacbbcdaccabbcaddabc
+ /\/\/ aadbcbadbbbbdbaaacaa
+ /\/\/ cadcacccbdabccbdcbcd
+ \     abaadbdbabbabdcaadba
+ /\/\/ dbdbacaccdccabccbacd
+ /\/\/ adcacbaccccbbbdbbbdb
+ /\/\/ bbdacaccbdccddabacdc
+  \    ddcbaabdcbabdabddbdc
+ /\/\/ cbacbcbaaddbcaaabccd
+ /\/\/ adbcdbacbbaccbcadbdd
+ /\/\/ cbaaaaccadcbdadcbaac
+ /\/\/ bcdbdbdacaccacaacddd
+ /\/\/ acdabdcbacbbbccdbcda
+ /\/\/ abbcbcaacbbccbdcbcbc
+ /\/\/ ccabadbccccbacdbaddb
+ /\/\/ baabadbcbcbdcaccaaaa
+   \   bdacaababdbbcaccadaa
+    \  ccababdbabbacbcbdddd
+     \ ddcaaaabdbcddbabaddd
+      \bdbadbaacdbbcbbbbabd
+ /\/\/ acbbccbbdacbddabdcad
+      /ccaddccbbbacbdadbaba
+     / cbcdababbdbdbaacbcda
+ /\/\/ cddcbacdaacbbbdddbbc
+ /\/\/ bcbaabcccaddaaabbacd
+ /\/\/ ddbacdccccdadbdcacdc
+ /\/\/ bcdbdcaaacdaddabccbd
+    /  bddcdbabbacdbacdddab
+ /\/\/ bbaaabbcaacdbbccddaa
+ /\/\/ cadddddbdabaddaaacdc
+ /\/\/ ccccbdddcdacdbaabcac
+ /\/\/ acdbcdadabdbbcbcdacb
+ /\/\/ cadabacbbdcabcdadcca
+ /\/\/ ddbcbadddacaaaacbada
+   /   babddaaabbbacdccbaac
+  /    dabaaccabababcdcbbad
+ /\/\/ cdbcbbbcadcddaccdbca
+ /\/\/ aaadcacdcabaabaadbcb
+ /     bcabbddbbbcbacacaddc
+ /\/\/ dbadaddcaaaaaaadaaba
