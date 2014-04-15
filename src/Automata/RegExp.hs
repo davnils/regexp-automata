@@ -1,9 +1,10 @@
-{-# LANGUAGE DeriveFoldable, DeriveFunctor, DeriveTraversable #-}
+{-# LANGUAGE DeriveFunctor #-}
 
-module Automata.RegExp where
+module Automata.RegExp
+(RegAST, AST(..), Fix(..))
+where
 
-import Data.Functor.Foldable hiding (Foldable)
-import Data.Foldable (Foldable)
+import Data.Functor.Foldable
 import Data.Traversable (Traversable)
 
 type RegAST = Fix AST
@@ -13,7 +14,7 @@ data AST t
   | AEither t t
   | AConcat t t
   | AKleeneStar t
-  | AZeroMore t
+  | ALeastOne t
   | AOption t
   | AChar Char
-  deriving (Eq, Foldable, Functor, Show, Traversable)
+  deriving (Eq, Functor, Show)

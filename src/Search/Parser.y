@@ -27,7 +27,7 @@ Reg
   : '.'                       { AAny                          }
   | Reg '|' Reg               { AEither     (Fix $1) (Fix $3) }
   | Reg '*'                   { AKleeneStar (Fix $1)          }
-  | Reg '+'                   { AZeroMore   (Fix $1)          }
+  | Reg '+'                   { ALeastOne   (Fix $1)          }
   | Reg '?'                   { AOption     (Fix $1)          }
   | '(' Reg ')'               {             $2                }
   | Reg '?'                   { AOption     (Fix $1)          }
