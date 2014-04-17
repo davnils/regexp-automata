@@ -50,8 +50,8 @@ instance Show EpsNFA where
     where
     renderAccepted                 = concatMap (("q_" <>) . show) (S.toList $ _endStates nfa)
     renderEntry ((from, sym), end) = unlines . map (output from sym) $ S.toList end
-    output from sym target         = "q_" <> show from <> " -> " <> "q_" <> show target <>
-                                     "[ label = \"" <> renderSymbol sym <> "\" ];"
+    output from sym target         = "\"q_" <> show from <> "\" -> " <> "\"q_" <> show target <>
+                                     "\"[ label = \"" <> renderSymbol sym <> "\" ];"
     renderSymbol (Left Epsilon)    = "empty"
     renderSymbol (Right sym)       = [sym]
 
