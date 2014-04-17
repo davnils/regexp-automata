@@ -14,6 +14,7 @@ library
   exposed-modules:     Automata.DFA, Automata.NFA, Automata.RegExp
   build-depends:       base >= 4.6,
                        containers >= 0.5,
+                       mtl,
                        recursion-schemes >= 3.0,
                        semigroups >= 0.12
   hs-source-dirs:      src
@@ -25,6 +26,7 @@ executable search
   build-depends:       array >= 0.4,
                        base >= 4.6,
                        containers >= 0.5,
+                       mtl,
                        recursion-schemes >= 3.0,
                        semigroups >= 0.12
   hs-source-dirs:      src

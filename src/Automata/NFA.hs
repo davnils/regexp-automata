@@ -1,5 +1,5 @@
 module Automata.NFA
-(EpsNFA, exprToNFA)
+-- (EpsNFA, exprToNFA)
 where
 
 import           Automata.RegExp
