@@ -43,7 +43,9 @@ instance (Show a) => Show (DFA (S.Set a)) where
     renderEntry ((from, sym), end) = show' from <> " -> " <> show' end <>
                                      "[ label = \"" <> renderSymbol sym <> "\" ];"
     renderSymbol sym               = [sym]
-    show' set                      = "\"q_{" <> intercalate "," (map show $ S.toList set) <> "}\""
+    show' set                      = "\"q_{" <> intercalate "," (map (escape . show) $ S.toList set) <> "}\""
+    escape ('\\':xs) = "\\\\" <> escape xs
+    escape c  = c
 
 -- add closure of starting state and call build, followed by post-processing
 fromNFAToDFA :: N.EpsNFA -> DFA (S.Set Int)
@@ -93,4 +95,6 @@ simulate :: (Eq k, Ord k) => String -> DFA k -> Bool
 simulate str dfa = go (_startState dfa) str
   where
   go st []     = S.member st (_endStates dfa)
-  go st (x:xs) = go (fromJust $ M.lookup (st, x) (_states dfa)) xs
+  go st (x:xs)
+    | S.member st (_endStates dfa) = True
+    | otherwise                    = go (fromJust $ M.lookup (st, x) (_states dfa)) xs
