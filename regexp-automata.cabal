@@ -22,7 +22,7 @@ library
 
 executable search
   main-is:             Search/Driver.hs
-  other-modules:       Search.Lexer, Search.Parser
+  other-modules:       Search.Lexer, Search.Parser, Search.Tests
   build-depends:       array >= 0.4,
                        base >= 4.6,
                        containers >= 0.5,

@@ -1,5 +1,5 @@
 module Automata.NFA
--- (EpsNFA, exprToNFA)
+(Epsilon(..), EpsNFA(..), exprToNFA, Symbol)
 where
 
 import           Automata.RegExp
@@ -63,7 +63,7 @@ alg AAny            s = EpsNFA s (connectAll 0 1 s) 0 (S.singleton 1) 2
 alg (AEither e1 e2) _ = either' e1 e2
 alg (AConcat e1 e2) _ = e1 <> e2
 alg (AKleeneStar e) s = kleene e s
-alg (ALeastOne e)   s = e <> (kleene e s)
+alg (ALeastOne e)   s = e <> kleene e s
 alg (AOption e)     s = either' e (binary [Left Epsilon] s)
 alg (AChar c)       s = binary [Right c] s
 
@@ -77,7 +77,7 @@ either' e1 e2         = tie $ single <> e1 <> e2 <> single
   tie (EpsNFA alpha states start accept sz) =
     (\m -> EpsNFA alpha m start accept sz) $
     M.alter (addSingleton $ sz - 1) (_size e1, Left Epsilon) $     -- add e1 -> single2
-    M.alter (addSingleton $ firstLower) (0, Left Epsilon) $        -- add single1 -> e2
+    M.alter (addSingleton firstLower) (0, Left Epsilon) $          -- add single1 -> e2
     M.adjust (S.delete firstLower) (_size e1, Left Epsilon) states -- remove e1 -> e2
   firstLower = _size e1 + 1
 
@@ -85,7 +85,7 @@ kleene e s            = tie $ single <> e <> single
   where
   tie (EpsNFA alpha states start accept sz) =
     (\m -> EpsNFA alpha m start accept sz) $
-    M.alter (addSingleton $ 1) (sz - 2, Left Epsilon) $            -- add prev final -> single2
+    M.alter (addSingleton 1) (sz - 2, Left Epsilon) $              -- add prev final -> single2
     M.alter (addSingleton $ sz - 1) (0, Left Epsilon) states       -- add single1 -> single2
 
 single = EpsNFA S.empty M.empty 0 (S.singleton 0) 1

@@ -5,7 +5,6 @@ module Automata.RegExp
 where
 
 import Data.Functor.Foldable
-import Data.Traversable (Traversable)
 
 type RegAST = Fix AST
 

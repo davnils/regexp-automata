@@ -1,6 +1,6 @@
 {-# LANGUAGE FlexibleInstances, TupleSections #-}
 module Automata.DFA
--- (DFA, fromNFAToDFA, minimize, simulate)
+(DFA, fromNFAToDFA, minimize, simulate)
 where
 
 import qualified Automata.NFA as N
@@ -40,7 +40,7 @@ instance (Show a) => Show (DFA (S.Set a)) where
     map renderEntry (M.toList $ _states dfa) <>
     ["}"]
     where
-    renderAccepted                 = concatMap (show') (S.toList $ _endStates dfa)
+    renderAccepted                 = concatMap show' (S.toList $ _endStates dfa)
     renderEntry ((from, sym), end) = show' from <> " -> " <> show' end <>
                                      "[ label = \"" <> renderSymbol sym <> "\" ];"
     renderSymbol sym               = [sym]
@@ -105,7 +105,7 @@ minimize dfa = (merge eq dfa, equivalent dfa)
   merge [] dfa         = dfa
   merge (group:xs) dfa = merge xs (DFA (_alphabet dfa) (transferIn . transferOut $ _states dfa) newStart endStates 0)
     where
-    newNode     = S.unions $ group <> [(S.singleton $ -1)]
+    newNode     = S.unions $ group <> [S.singleton $ -1]
     newStart    = if (elem (_startState dfa) group) then newNode else (_startState dfa)
     transferOut = M.map     $ \e -> if (elem e group) then newNode else e
     transferIn  = M.mapKeys $ \(src, sym) -> if (elem src group) then (newNode, sym) else (src, sym)
@@ -116,7 +116,7 @@ minimize dfa = (merge eq dfa, equivalent dfa)
     removed     = S.difference (_endStates dfa) (S.fromList $ map S.singleton $ S.toList newNode)
 
 segment [] _         = []
-segment (x:xs) pairs = [x : (map snd emit)] <> segment xs pairs'
+segment (x:xs) pairs = [x : map snd emit] <> segment xs pairs'
   where
   (emit, pairs') = partition (\(a,b) -> a == x || b == x) pairs
 
@@ -129,9 +129,9 @@ sortTuple = map (\(x,y) -> if x <= y then (x,y) else (y, x))
 -- locate inequivalent states (table fill method)
 -- equivalent = all possible pairs - distinguished
 equivalent :: DFA Node -> S.Set (Node, Node)
-equivalent dfa = S.fromList $ [(p, q) | p <- allStates, q <- allStates, p < q] \\ (go initial)
+equivalent dfa = S.fromList $ [(p, q) | p <- allStates, q <- allStates, p < q] \\ go initial
   where
-  initial   = sortTuple $ [(p, q) | p <- endStates, q <- (allStates \\ endStates)]
+  initial   = sortTuple [(p, q) | p <- endStates, q <- allStates \\ endStates]
   endStates = S.toList $ _endStates dfa
   allStates = S.toList . S.fromList . map fst . M.keys $ _states dfa
 
@@ -146,7 +146,7 @@ equivalent dfa = S.fromList $ [(p, q) | p <- allStates, q <- allStates, p < q]
 
     -- for each alpha: check if there are incoming transitions, flag all source combinations
     consider (p, q) = concatMap (considerSymbol p q) (S.toList $ _alphabet dfa)
-    considerSymbol p q s = removeDup $ [(a, b) | a <- concatMap (considerEntry p s) allStates, b <- concatMap (considerEntry q s) allStates, a /= b]
+    considerSymbol p q s = removeDup [(a, b) | a <- concatMap (considerEntry p s) allStates, b <- concatMap (considerEntry q s) allStates, a /= b]
     removeDup = S.toList . S.fromList . sortTuple
     considerEntry dst sym src
       | M.lookup (src, sym) (_states dfa) == Just dst = [src]
