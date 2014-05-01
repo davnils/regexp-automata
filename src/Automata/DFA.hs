@@ -1,20 +1,21 @@
-{-# LANGUAGE FlexibleInstances, TupleSections #-}
+{-# LANGUAGE FlexibleInstances, ScopedTypeVariables, TupleSections #-}
 module Automata.DFA
-(DFA, fromNFAToDFA, minimize, simulate)
+(DFA(..), equivalent, fromNFAToDFA, minimize, simulate)
 where
 
 import qualified Automata.NFA as N
-import           Control.Monad (forM,when)
+import           Control.Monad (foldM,forM,when)
 import           Control.Monad.Trans (lift)
 import qualified Control.Monad.Reader as R
 import qualified Control.Monad.State as ST
 import           Data.Foldable (forM_)
 import           Data.Functor.Foldable (cata)
-import           Data.List ((\\), intercalate, intersect, partition, union)
+import           Data.List ((\\), foldl', intercalate, intersect, partition, sort, union)
 import qualified Data.Map as M
 import           Data.Maybe (fromJust)
 import           Data.Semigroup ((<>), Semigroup)
 import qualified Data.Set as S
+import System.IO.Unsafe
 
 type Symbol = Char
 
@@ -92,12 +93,11 @@ closure = ST.execStateT $ do
 type Node = S.Set Int
 
 -- find the unique (up to isomorphism) minimal representation
--- minimize :: DFA Node -> DFA Node
-minimize dfa = (merge eq dfa, equivalent dfa)
+minimize :: DFA Node -> IO (DFA Node)
+minimize dfa = do
+  eq <- equivalent dfa
+  return $ merge eq dfa
   where
-  -- only keep distinct pairs, construct [[Node]] indicating equivalence classes
-  eq = equivalent' dfa
-
   -- construct a single node for each equivalence class
   -- incoming edges to either node: add to replacement
   -- outgoing edges from either node: add to replacement
@@ -106,51 +106,104 @@ minimize dfa = (merge eq dfa, equivalent dfa)
   merge (group:xs) dfa = merge xs (DFA (_alphabet dfa) (transferIn . transferOut $ _states dfa) newStart endStates 0)
     where
     newNode     = S.unions $ group <> [S.singleton $ -1]
-    newStart    = if (elem (_startState dfa) group) then newNode else (_startState dfa)
+    newStart    = if elem (_startState dfa) group then newNode else (_startState dfa)
     transferOut = M.map     $ \e -> if (elem e group) then newNode else e
     transferIn  = M.mapKeys $ \(src, sym) -> if (elem src group) then (newNode, sym) else (src, sym)
 
-    -- delete all occurences of elements in group (set diff), and insert the new one (set union), if applicable
-    -- assumes that either (i) all entries are non-accept (2) all entries are accept
-    endStates   = if (removed == _endStates dfa) then (_endStates dfa) else (S.union (S.singleton newNode) removed)
-    removed     = S.difference (_endStates dfa) (S.fromList $ map S.singleton $ S.toList newNode)
+    -- assumes only one end state
+    endStates   = if S.null $ S.intersection (_endStates dfa) $ S.fromList group then _endStates dfa else S.singleton newNode
 
-segment [] _         = []
-segment (x:xs) pairs = [x : map snd emit] <> segment xs pairs'
+-- compute equivalence classes of states using the table fill method
+-- need a general strategy for creating the list of equivalence classes
+equivalent :: DFA Node -> IO [[Node]]
+equivalent dfa = do
+  -- print dfa
+  -- print "END OF DFA"
+  -- print . S.toList $ distinct dfa
+  -- print "END OF DISTINCT PAIRS"
+  -- print eqPairs
+  -- print "END OF EQUIVALENT PAIRS"
+  -- print unassigned
+  -- print "END OF UNASSIGNED"
+  let res = ST.evalState buildClass unassigned
+  -- print res
+  -- print "END OF RESULT"
+  return res
   where
-  (emit, pairs') = partition (\(a,b) -> a == x || b == x) pairs
+  -- take all state pairs (with p < q) and remove all distinguishable
+  eqPairs    = allPairs dfa \\ (S.toList $ distinct dfa)
+  unassigned = allStates dfa
+  buildClass = do
+    (left :: [Node]) <- ST.get
 
-equivalent' dfa = filter (\l -> length l > 1) . segment allStates . S.toList $ equivalent dfa
+    case left of
+      [] -> return [[]]
+      [x] -> return [[x]]
+      (h:t) -> do
+        -- build closure
+        new <- closure' h
+        rest <- buildClass
+        return (new:rest)
+
+  -- build a list of all reachable elements from 'elem'
+  -- closure' :: Node -> [Node]
+  closure' elem = do
+    let pairs = filter (\(x,y) -> x == elem || y == elem) eqPairs
+        new   = map (\(x,y) -> if x == elem then y else x) pairs
+        new'  = elem:new
+
+    prev <- ST.get
+    let newState = prev \\ new'
+    if newState == prev then
+      return []
+      else do
+        ST.put newState
+        rest <- fmap concat $ mapM closure' new
+        return $ new' <> rest
+
+allStates dfa = sort . S.toList . S.fromList $ M.elems (_states dfa) <> (map fst $ M.keys (_states dfa))
+allPairs dfa = [(p, q) | p <- allStates dfa, q <- allStates dfa, p < q]
+
+-- construction outlined on pp. 160 "Introduction to automata theory[..]" (Hopcroft et al, 2014)
+distinct :: DFA Node -> S.Set (Node, Node)
+distinct dfa = {-unsafePerformIO $ printDebug >> return -}distinguished
   where
-  allStates = S.toList . S.fromList . map fst . M.keys $ _states dfa
+  -- for each pair of states, intialize a list of dependencies, as follows:
+  --
+  -- for each pair of states (p,q):
+  --   for all symbols s:
+  --     add (p,q) into the dep-list of {delta(p,a),delta(q,a)}
+  initDeps          = M.fromList . zip (allPairs dfa) $ repeat []
+  deps              = foldl' add initDeps (allPairs dfa)
+  add deps' (p, q)  = S.fold (\s d -> M.adjust ((sortPair (p, q)):) (sortPair (get p s, get q s)) d) deps' (_alphabet dfa)
+  get state sym     = (\(Just val) -> val) $ M.lookup (state, sym) (_states dfa)
 
-sortTuple = map (\(x,y) -> if x <= y then (x,y) else (y, x))
+  -- create an initial queue of distinguished states, process until completion
+  distinguished     = ST.execState (process initialQueue) (S.fromList initialQueue)
 
--- locate inequivalent states (table fill method)
--- equivalent = all possible pairs - distinguished
-equivalent :: DFA Node -> S.Set (Node, Node)
-equivalent dfa = S.fromList $ [(p, q) | p <- allStates, q <- allStates, p < q] \\ go initial
-  where
-  initial   = sortTuple [(p, q) | p <- endStates, q <- allStates \\ endStates]
-  endStates = S.toList $ _endStates dfa
-  allStates = S.toList . S.fromList . map fst . M.keys $ _states dfa
+  -- create all ordered tuples of accept and non-accepting states as init queue
+  initialQueue      = [sortPair (p, q) | p <- nonAccept, q <- S.toList (_endStates dfa)]
+  nonAccept = (allStates dfa) \\ S.toList (_endStates dfa)
 
-  -- for every pair of disting.: for each a in alphabet: mark all source nodes as distinguished
-  -- repeat until no more nodes have been added
-  go :: [(Node, Node)] -> [(Node, Node)]
-  go disting
-    | length new == length disting = disting
-    | otherwise                   = go new
-    where
-    new  = union disting $ concatMap consider disting
+  {-printDebug = do
+    putStrLn ""
+    putStrLn $ "this is the deplist: " <> show deps
+    putStrLn ""-}
 
-    -- for each alpha: check if there are incoming transitions, flag all source combinations
-    consider (p, q) = concatMap (considerSymbol p q) (S.toList $ _alphabet dfa)
-    considerSymbol p q s = removeDup [(a, b) | a <- concatMap (considerEntry p s) allStates, b <- concatMap (considerEntry q s) allStates, a /= b]
-    removeDup = S.toList . S.fromList . sortTuple
-    considerEntry dst sym src
-      | M.lookup (src, sym) (_states dfa) == Just dst = [src]
-      | otherwise = []
+  process []        = return ()
+  process ((p,q):t) = do
+    distinct <- ST.get
+    case M.lookup (p,q) deps of
+      Just [] -> process t
+      Just list -> do
+        let new = filter (not . flip S.member distinct) list
+        ST.put $ S.union distinct (S.fromList list)
+        process (new <> t)
+
+  -- utility
+  sortPair (p,q)
+    | p < q     = (p, q)
+    | otherwise = (q, p)
 
 simulate :: (Eq k, Ord k) => String -> DFA k -> Bool
 simulate str dfa = go (_startState dfa) str
