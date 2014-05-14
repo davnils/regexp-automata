@@ -25,7 +25,7 @@ main = do
   -- _ <- equivalent dfa
 
   minDFA <- minimize dfa
-  print minDFA
+  -- print minDFA
   -- print "END OF MIN DFA"
 
   mapM_ (check minDFA) input
