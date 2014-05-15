@@ -10,8 +10,8 @@ import qualified Control.Monad.Reader as R
 import qualified Control.Monad.State as ST
 import           Data.Foldable (forM_)
 import           Data.Functor.Foldable (cata)
-import           Data.List ((\\), foldl', intercalate, intersect, partition, sort, union, sortBy, groupBy, elem)
-import Data.List (find)
+import           Data.List ((\\), find)
+import qualified Data.List as L
 import qualified Data.Map as M
 import           Data.Ord
 import           Data.Maybe (fromJust, fromMaybe)
@@ -47,7 +47,7 @@ instance (Show a) => Show (DFA (S.Set a)) where
     renderEntry ((from, sym), end) = show' from <> " -> " <> show' end <>
                                      "[ label = \"" <> renderSymbol sym <> "\" ];"
     renderSymbol sym               = [sym]
-    show' set                      = "\"q_{" <> intercalate "," (map (escape . show) $ S.toList set) <> "}\""
+    show' set                      = "\"q_{" <> L.intercalate "," (map (escape . show) $ S.toList set) <> "}\""
     escape ('\\':xs) = "\\\\" <> escape xs
     escape c  = c
 
@@ -61,7 +61,7 @@ fromNFAToDFA nfa = update . flip R.runReader nfa $ do
 
   update (DFA sig states start _ _) = DFA sig states start (S.fromList accept) (length allStates)
     where
-    allStates = map fst $ M.keys states -- TODO: shouldn't all map values be added as well?
+    allStates = map fst $ M.keys states
     accept = filter (\s -> S.intersection s (N._endStates nfa) /= S.empty) allStates 
 
 type BuildM k = ST.StateT (DFA k) (R.Reader N.EpsNFA)
@@ -95,47 +95,41 @@ closure = ST.execStateT $ do
 type Node = S.Set Int
 
 -- find unique representation
--- the new states have names consisting of all states joined together
-minimize :: DFA Node -> IO (DFA Node)
-minimize dfa = do
-  eq <- equivalent dfa
-  return $ DFA (_alphabet dfa)
-              (states eq)
-              (convert $ startState eq)
-              (S.fromList $ endStates eq)
-              0
+minimize :: DFA Node -> DFA Node
+minimize dfa = DFA (_alphabet dfa)
+                   (states)
+                   (S.unions $ fromJust startState)
+                   (S.fromList endStates)
+                   0
+ 
   where
-    convert = toState . fromJust
-    endStates = map toState . filter (or . map (\s -> S.member s (_endStates dfa)))
-    startState = find (elem (_startState dfa))
-    toState = S.unions
+    eq         = equivalent dfa
+    endStates  = map S.unions $ filter (any $ flip S.member $ _endStates dfa) eq
+    startState = find (elem $ _startState dfa) eq
 
     -- for each block, consider all symbols, lookup the target block
-    states eq = M.unions $ map (convertTrans) eq
+    states     = M.unions $ map convertTrans eq
       where
-      convertTrans st = M.fromList $ zip (zip this alpha) (map (toState . findTrans) alpha)
+      convertTrans st = M.fromList $ zip (zip this alpha) $ map (S.unions . findTrans) alpha
         where
-        some = head st
-        state = toState st
         alpha = S.toList $ _alphabet dfa
-        this = repeat state
+        this = repeat $ S.unions st
 
-        -- actually need to find the target block here
         findTrans sym = fromJust $ find (elem target) eq
-          where target = fromJust $ M.lookup (some, sym) $ _states dfa
+          where
+          target = fromJust $ M.lookup (head st, sym) $ _states dfa
 
 -- compute equivalence classes of states using the table fill method
--- need a general strategy for creating the list of equivalence classes
-equivalent :: DFA Node -> IO [[Node]]
-equivalent dfa = return $ go (allStates dfa)
+equivalent :: DFA Node -> [[Node]]
+equivalent dfa = go (allStates dfa)
   where
   go []     = []
   go (x:xs) = (x:p1) : go p2
     where
-    (p1, p2) = partition (eqComp x) xs
+    (p1, p2) = L.partition (eqComp x) xs
     eqComp s1 s2 = S.notMember (sortPair (s1, s2)) (distinct dfa)
 
-allStates dfa = sort . S.toList . S.fromList $ M.elems (_states dfa) <> (map fst $ M.keys (_states dfa))
+allStates dfa = L.sort . S.toList . S.fromList $ M.elems (_states dfa) <> map fst (M.keys (_states dfa))
 
 allPairs dfa = [(p, q) | p <- allStates dfa, q <- allStates dfa, p < q]
 
@@ -145,7 +139,7 @@ distinct dfa = distinguished
   where
   -- for each pair of states (p,q), symbols s:
   --   add (p,q) into the dep-list of {delta(p,a),delta(q,a)}
-  deps              = foldl' add M.empty (allPairs dfa)
+  deps              = L.foldl' add M.empty (allPairs dfa)
   add deps' (p, q)  = S.fold (\s d -> M.alter (insertion p q) (sortPair (get p s, get q s)) d) deps' (_alphabet dfa)
   insertion p q     = Just . S.insert (sortPair (p, q)) . fromMaybe S.empty
   get state sym     = fromJust $ M.lookup (state, sym) (_states dfa)
@@ -155,7 +149,7 @@ distinct dfa = distinguished
 
   -- create all ordered tuples of accept and non-accepting states as init queue
   initialQueue      = [sortPair (p, q) | p <- nonAccept, q <- S.toList (_endStates dfa)]
-  nonAccept         = (allStates dfa) \\ S.toList (_endStates dfa)
+  nonAccept         = allStates dfa \\ S.toList (_endStates dfa)
 
   process []        = return ()
   process ((p,q):t) = do
@@ -167,7 +161,6 @@ distinct dfa = distinguished
     ST.put $ S.union distinct new
     process $ S.toList new <> t
 
--- utility
 sortPair (p,q)
   | p < q     = (p, q)
   | otherwise = (q, p)

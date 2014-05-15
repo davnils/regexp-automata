@@ -28,7 +28,7 @@ data EpsNFA
   deriving (Eq)
 
 instance Semigroup EpsNFA where
-  e1 <> e2 = EpsNFA (S.union (_alphabet e1) (_alphabet e2))
+  e1 <> e2 = EpsNFA (_alphabet e1 `S.union` _alphabet e2)
                     (trans1 <> trans2)
                     (_startState e1)
                     (S.map (+sz) $ _endStates e2)
@@ -56,7 +56,7 @@ instance Show EpsNFA where
     renderSymbol (Right sym)       = [sym]
 
 exprToNFA :: S.Set Symbol -> RegAST -> EpsNFA
-exprToNFA st = cata (\e -> alg e st)
+exprToNFA = cata . flip alg
 
 alg :: AST EpsNFA -> S.Set Symbol -> EpsNFA
 alg AAny            s = EpsNFA s (connectAll 0 1 s) 0 (S.singleton 1) 2
