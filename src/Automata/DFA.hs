@@ -11,6 +11,7 @@ import qualified Control.Monad.State as ST
 import           Data.Foldable (forM_)
 import           Data.Functor.Foldable (cata)
 import           Data.List ((\\), foldl', intercalate, intersect, partition, sort, union, sortBy, groupBy, elem)
+import Data.List (find)
 import qualified Data.Map as M
 import           Data.Ord
 import           Data.Maybe (fromJust, fromMaybe)
@@ -93,23 +94,35 @@ closure = ST.execStateT $ do
 
 type Node = S.Set Int
 
--- find the unique (up to isomorphism) minimal representation
--- TODO: rewrite from scratch
+-- find unique representation
+-- the new states have names consisting of all states joined together
 minimize :: DFA Node -> IO (DFA Node)
 minimize dfa = do
   eq <- equivalent dfa
-  return $ merge eq dfa
+  return $ DFA (_alphabet dfa)
+              (states eq)
+              (convert $ startState eq)
+              (S.fromList $ endStates eq)
+              0
   where
-  merge [] dfa         = dfa
-  merge (group:xs) dfa = merge xs (DFA (_alphabet dfa) (transferIn . transferOut $ _states dfa) newStart endStates 0)
-    where
-    newNode     = S.unions $ group <> [S.singleton $ -1]
-    newStart    = if elem (_startState dfa) group then newNode else (_startState dfa)
-    transferOut = M.map     $ \e -> if (elem e group) then newNode else e
-    transferIn  = M.mapKeys $ \(src, sym) -> if (elem src group) then (newNode, sym) else (src, sym)
+    convert = toState . fromJust
+    endStates = map toState . filter (or . map (\s -> S.member s (_endStates dfa)))
+    startState = find (elem (_startState dfa))
+    toState = S.unions
 
-    -- assumes only one end state
-    endStates   = if S.null $ S.intersection (_endStates dfa) $ S.fromList group then _endStates dfa else S.singleton newNode
+    -- for each block, consider all symbols, lookup the target block
+    states eq = M.unions $ map (convertTrans) eq
+      where
+      convertTrans st = M.fromList $ zip (zip this alpha) (map (toState . findTrans) alpha)
+        where
+        some = head st
+        state = toState st
+        alpha = S.toList $ _alphabet dfa
+        this = repeat state
+
+        -- actually need to find the target block here
+        findTrans sym = fromJust $ find (elem target) eq
+          where target = fromJust $ M.lookup (some, sym) $ _states dfa
 
 -- compute equivalence classes of states using the table fill method
 -- need a general strategy for creating the list of equivalence classes
